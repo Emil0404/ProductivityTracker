@@ -50,8 +50,8 @@ Productivity_Tracker/
 ### 1) Repository klonen
 
 ```bash
-git clone <DEIN-REPO-URL>
-cd Productivity_Tracker
+git clone https://github.com/Emil0404/ProductivityTracker
+cd ProductivityTracker
 ```
 
 ### 2) Virtuelle Umgebung erstellen
@@ -110,14 +110,3 @@ Hinweis: `app.py` ist für Replit angepasst (`host=0.0.0.0` und `PORT`-Support).
 - Sessions werden clientseitig in `localStorage` gespeichert.
 - Es ist keine Datenbank notwendig.
 - Beim Löschen von Browserdaten gehen die gespeicherten Sessions verloren.
-
-## Roadmap (Ideen)
-
-- CSV-Export der Sessions
-- Tagesziel mit Fortschrittsbalken
-- Session-Tags (z. B. Lernen, Coding, Deep Work)
-- Optionaler Pomodoro-Modus
-
-## Lizenz
-
-Du kannst hier z. B. `MIT` eintragen, wenn du eine Open-Source-Lizenz hinzufügen möchtest.
