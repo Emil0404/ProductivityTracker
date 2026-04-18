@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>Produktivitätstracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-glow"></div>
+    <main class="app-shell">
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">Focus Dashboard</p>
+                <h1>Produktivitätstracker</h1>
+                <p class="subtitle">Tracke Sessions präzise und erkenne Muster in deinem Fokus.</p>
+            </div>
+            <div class="live-pill" id="live-status">Bereit</div>
+        </header>
+
+        <section class="timer-card" id="timer-card">
+            <h2>Stoppuhr</h2>
+            <div id="time-display">00:00:00.000</div>
+            <div class="timer-actions">
+                <button id="start-btn">Start</button>
+                <button id="pause-btn" disabled>Pause</button>
+                <button id="stop-btn" disabled>Stop</button>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <p class="stat-label">Gesamtzeit heute</p>
+                <p class="stat-value" id="total-today">00:00:00</p>
+            </article>
+            <article class="stat-card">
+                <p class="stat-label">Sessions heute</p>
+                <p class="stat-value" id="session-count-today">0</p>
+            </article>
+            <article class="stat-card">
+                <p class="stat-label">Ø Session heute</p>
+                <p class="stat-value" id="average-session-today">00:00:00</p>
+            </article>
+            <article class="stat-card">
+                <p class="stat-label">Streak (Tage)</p>
+                <p class="stat-value" id="streak-days">0</p>
+            </article>
+        </section>
+
+        <section class="content-grid">
+            <article class="panel chart-panel">
+                <div class="panel-head">
+                    <h3>Tagesverlauf</h3>
+                    <p>Wann und wie lange du heute fokussiert warst</p>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="timeline-chart"></canvas>
+                </div>
+            </article>
+
+            <article class="panel chart-panel">
+                <div class="panel-head">
+                    <h3>Daily Fokuszeit</h3>
+                    <p>Vergleich deiner täglichen Fokuszeit</p>
+                    <div class="range-control">
+                        <label for="weekly-range">Zeitraum</label>
+                        <select id="weekly-range">
+                            <option value="7">7 Tage</option>
+                            <option value="14">14 Tage</option>
+                            <option value="30">30 Tage</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="weekly-chart"></canvas>
+                </div>
+            </article>
+
+            <article class="panel sessions-panel">
+                <div class="panel-head">
+                    <h3>Letzte Sessions</h3>
+                    <p>Chronologische Übersicht deiner letzten Fokusblöcke</p>
+                    <div class="session-actions">
+                        <button id="clear-sessions-btn" class="ghost-btn">Alle Sessions löschen</button>
+                    </div>
+                </div>
+                <ul id="session-list"></ul>
+            </article>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
