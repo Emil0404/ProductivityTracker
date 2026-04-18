@@ -21,6 +21,10 @@
 
         <section class="timer-card" id="timer-card">
             <h2>Stoppuhr</h2>
+            <div class="subject-picker">
+                <label for="active-subject-select">Aktive Kategorie</label>
+                <select id="active-subject-select"></select>
+            </div>
             <div id="time-display">00:00:00.000</div>
             <div class="timer-actions">
                 <button id="start-btn">Start</button>
@@ -29,37 +33,64 @@
             </div>
         </section>
 
-        <section class="stats-grid">
-            <article class="stat-card">
-                <p class="stat-label">Gesamtzeit heute</p>
-                <p class="stat-value" id="total-today">00:00:00</p>
-            </article>
-            <article class="stat-card">
-                <p class="stat-label">Sessions heute</p>
-                <p class="stat-value" id="session-count-today">0</p>
-            </article>
-            <article class="stat-card">
-                <p class="stat-label">Ø Session heute</p>
-                <p class="stat-value" id="average-session-today">00:00:00</p>
-            </article>
-            <article class="stat-card">
-                <p class="stat-label">Streak (Tage)</p>
-                <p class="stat-value" id="streak-days">0</p>
-            </article>
-        </section>
-
         <section class="content-grid">
-            <article class="panel chart-panel">
+            <section class="stats-grid">
+                <article class="stat-card">
+                    <p class="stat-label">Gesamtzeit heute</p>
+                    <p class="stat-value" id="total-today">00:00:00</p>
+                </article>
+                <article class="stat-card">
+                    <p class="stat-label">Sessions heute</p>
+                    <p class="stat-value" id="session-count-today">0</p>
+                </article>
+                <article class="stat-card">
+                    <p class="stat-label">Ø Session heute</p>
+                    <p class="stat-value" id="average-session-today">00:00:00</p>
+                </article>
+                <article class="stat-card">
+                    <p class="stat-label">Streak (Tage)</p>
+                    <p class="stat-value" id="streak-days">0</p>
+                </article>
+            </section>
+
+            <section class="panel subjects-panel">
                 <div class="panel-head">
-                    <h3>Tagesverlauf</h3>
-                    <p>Wann und wie lange du heute fokussiert warst</p>
+                    <h3>Kategorien</h3>
+                    <p>Lege Kategorien an und gib ihnen eigene Farben.</p>
+                </div>
+                <form id="subject-form" class="subject-form">
+                    <input id="subject-name-input" type="text" placeholder="z. B. Arbeit oder Freizeit" maxlength="40" required>
+                    <div class="color-picker-group">
+                        <div id="color-presets" class="color-presets" aria-label="Vorgefertigte Farben"></div>
+                        <button id="custom-color-btn" class="ghost-btn custom-color-btn" type="button">Custom</button>
+                        <input id="subject-color-input" type="color" value="#67a2ff" aria-label="Custom-Farbe auswählen">
+                    </div>
+                    <button type="submit">Hinzufügen</button>
+                </form>
+                <ul id="subject-list"></ul>
+            </section>
+
+            <article class="panel chart-panel share-panel">
+                <div class="panel-head">
+                    <h3>Kategorienverteilung</h3>
+                    <p>Anteil der gesamten Fokuszeit je Kategorie</p>
+                    <div class="range-control">
+                        <label for="subject-share-range">Zeitraum</label>
+                        <select id="subject-share-range">
+                            <option value="all">Gesamt</option>
+                            <option value="30">Letzte 30 Tage</option>
+                            <option value="7">Letzte 7 Tage</option>
+                            <option value="today">Heute</option>
+                        </select>
+                    </div>
+                    <p>Gesamtfokuszeit: <strong id="overall-focus-total">00:00:00</strong></p>
                 </div>
                 <div class="chart-wrap">
-                    <canvas id="timeline-chart"></canvas>
+                    <canvas id="subject-share-chart"></canvas>
                 </div>
             </article>
 
-            <article class="panel chart-panel">
+            <article class="panel chart-panel weekly-panel">
                 <div class="panel-head">
                     <h3>Daily Fokuszeit</h3>
                     <p>Vergleich deiner täglichen Fokuszeit</p>
@@ -82,16 +113,27 @@
                     <h3>Letzte Sessions</h3>
                     <p>Chronologische Übersicht deiner letzten Fokusblöcke</p>
                     <div class="session-actions">
+                        <button id="toggle-session-editor-btn" class="ghost-btn">Sessions bearbeiten</button>
                         <button id="clear-sessions-btn" class="ghost-btn">Alle Sessions löschen</button>
                     </div>
                 </div>
                 <ul id="session-list"></ul>
+                <section id="session-editor" class="session-editor hidden">
+                    <h4>Session-Editor</h4>
+                    <form id="session-editor-form" class="session-editor-form">
+                        <input id="session-editor-date" type="date" required>
+                        <input id="session-editor-time" type="time" step="60" required>
+                        <input id="session-editor-duration" type="time" step="1" value="00:30:00" required>
+                        <select id="session-editor-subject" required></select>
+                        <button type="submit">Session hinzufügen</button>
+                    </form>
+                    <ul id="session-editor-list"></ul>
+                </section>
             </article>
         </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

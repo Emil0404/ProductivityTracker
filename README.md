@@ -14,11 +14,15 @@ Eine moderne Flask-Web-App zur Messung deiner Produktivität mit präziser Stopp
   - Durchschnittliche Sessiondauer
   - Streak in Tagen
 - Diagramme:
-  - Tagesverlauf (Sessiondauer über Tageszeit)
+  - Kategorienverteilung als Kreisdiagramm
   - Daily Fokuszeit (umschaltbar 7/14/30 Tage)
 - Session-Verwaltung:
   - Einzelne Session löschen
   - Alle Sessions löschen
+- Kategorien:
+  - Eigene Kategorien anlegen
+  - Farbe pro Kategorie festlegen
+  - Sessions einer aktiven Kategorie zuordnen
 - Responsive Layout für Desktop und Mobile
 - Keyboard-Shortcuts:
   - `Space`: Start / Pause / Fortsetzen
