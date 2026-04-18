@@ -38,6 +38,7 @@ body {
     background: radial-gradient(circle, rgba(103, 162, 255, 0.18) 0%, rgba(103, 162, 255, 0) 70%);
     pointer-events: none;
     z-index: 0;
+    animation: glowFloat 16s ease-in-out infinite alternate;
 }
 
 .app-shell {
@@ -48,6 +49,23 @@ body {
     gap: 1.15rem;
     position: relative;
     z-index: 1;
+    opacity: 1;
+    animation: fadeInUp 0.9s ease-out 0.1s;
+}
+
+.page-header {
+    opacity: 1;
+    animation: fadeInUp 0.75s ease-out 0.15s;
+}
+
+.timer-card {
+    opacity: 1;
+    animation: fadeInUp 0.75s ease-out 0.25s;
+}
+
+.content-grid {
+    opacity: 1;
+    animation: fadeInUp 0.75s ease-out 0.35s;
 }
 
 .page-header {
@@ -91,6 +109,7 @@ h1 {
     color: #d6ffe8;
     border-color: rgba(47, 230, 167, 0.6);
     box-shadow: 0 0 24px rgba(47, 230, 167, 0.3);
+    animation: pulseGlow 2.2s ease-in-out infinite;
 }
 
 .timer-card,
@@ -102,15 +121,30 @@ h1 {
     box-shadow: var(--shadow);
 }
 
+.timer-card,
+.stats-grid,
+.panel {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.8s ease, transform 0.8s ease, box-shadow 0.35s ease;
+}
+
 .timer-card {
     padding: clamp(1rem, 2vw, 1.5rem);
     text-align: center;
-    transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.timer-card.visible,
+.stats-grid.visible,
+.panel.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .timer-card.running {
     box-shadow: 0 18px 55px rgba(56, 125, 255, 0.28);
     transform: translateY(-2px);
+    animation: timerPulse 2.5s ease-in-out infinite;
 }
 
 .timer-card h2 {
@@ -177,13 +211,32 @@ button {
 }
 
 button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    filter: brightness(1.07);
+    transform: translateY(-2px) scale(1.01);
+    filter: brightness(1.08);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
 }
 
 button:disabled {
     opacity: 0.45;
     cursor: not-allowed;
+}
+
+.color-swatch,
+.ghost-btn,
+button {
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.color-swatch:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 2px rgba(103, 162, 255, 0.15);
+}
+
+.custom-color-btn:hover {
+    transform: translateY(-1px);
 }
 
 .stats-grid {
@@ -225,7 +278,7 @@ button:disabled {
         "sessions sessions";
     gap: 0.95rem;
     width: 100%;
-    align-items: start;
+    align-items: stretch;
 }
 
 .panel {
@@ -250,6 +303,37 @@ button:disabled {
 
 .chart-panel {
     grid-column: span 1;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-panel.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition-duration: 0.75s;
+}
+
+.chart-panel .chart-wrap {
+    flex: 1;
+}
+
+.chart-panel:not(.visible) .chart-wrap {
+    background: radial-gradient(circle at top center, rgba(103, 162, 255, 0.08), transparent 55%);
+}
+
+.chart-panel:not(.visible) canvas {
+    opacity: 0.18;
+}
+
+.chart-panel:not(.visible) .chart-wrap {
+    background: radial-gradient(circle at top center, rgba(103, 162, 255, 0.08), transparent 55%);
+}
+
+.chart-panel:not(.visible) canvas {
+    opacity: 0.18;
 }
 
 .sessions-panel {
@@ -414,6 +498,18 @@ canvas {
     margin-top: 0.9rem;
     border-top: 1px solid rgba(151, 176, 255, 0.2);
     padding-top: 0.9rem;
+    max-height: 1200px;
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.25s ease, margin-top 0.25s ease, padding-top 0.25s ease, border-color 0.25s ease;
+}
+
+.session-editor.hidden {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    padding-top: 0;
+    border-top-color: transparent;
 }
 
 .session-editor h4 {
@@ -447,7 +543,9 @@ canvas {
 }
 
 .hidden {
-    display: none;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
 }
 
 .session-item {
@@ -459,7 +557,7 @@ canvas {
     border: 1px solid rgba(151, 176, 255, 0.16);
     border-radius: 12px;
     padding: 0.62rem 0.72rem;
-    animation: fadeInUp 0.3s ease;
+    animation: fadeInUp 0.5s ease;
 }
 
 .session-index {
@@ -491,6 +589,35 @@ canvas {
 .empty-state {
     color: var(--text-muted);
     padding: 1rem 0.2rem;
+}
+
+@keyframes timerPulse {
+    0%, 100% {
+        transform: translateY(-2px) scale(1);
+    }
+    50% {
+        transform: translateY(-3px) scale(1.01);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(47, 230, 167, 0.28);
+    }
+    50% {
+        box-shadow: 0 0 32px rgba(47, 230, 167, 0.42);
+    }
+}
+
+@keyframes glowFloat {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-18px) scale(1.05);
+        opacity: 0.9;
+    }
 }
 
 @keyframes fadeInUp {

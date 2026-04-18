@@ -7,6 +7,8 @@ let sessions = [];
 let subjects = [];
 let subjectShareChart;
 let weeklyChart;
+let subjectShareChartInitialized = false;
+let weeklyChartInitialized = false;
 
 const STORAGE_KEY = "productivity-sessions";
 const SUBJECTS_STORAGE_KEY = "productivity-subjects";
@@ -711,15 +713,27 @@ function renderAll() {
     displaySessions();
     displayAllSessionsEditor();
     updateStats();
-    buildSubjectShareChart();
-    buildWeeklyChart();
+    if (subjectShareChartInitialized) {
+        buildSubjectShareChart();
+    }
+    if (weeklyChartInitialized) {
+        buildWeeklyChart();
+    }
 }
 
 startBtn.addEventListener("click", startTimer);
 pauseBtn.addEventListener("click", togglePause);
 stopBtn.addEventListener("click", stopTimer);
-weeklyRange.addEventListener("change", buildWeeklyChart);
-subjectShareRange.addEventListener("change", buildSubjectShareChart);
+weeklyRange.addEventListener("change", () => {
+    if (weeklyChartInitialized) {
+        buildWeeklyChart();
+    }
+});
+subjectShareRange.addEventListener("change", () => {
+    if (subjectShareChartInitialized) {
+        buildSubjectShareChart();
+    }
+});
 clearSessionsBtn.addEventListener("click", () => {
     if (!sessions.length) {
         return;
@@ -761,6 +775,40 @@ sessionEditorForm.addEventListener("submit", (event) => {
     saveSessions();
     renderAll();
 });
+
+const scrollVisibilityObserver = new IntersectionObserver(
+    (entries) => {
+        entries.forEach((entry) => {
+            const panel = entry.target;
+            panel.classList.toggle("visible", entry.isIntersecting);
+            if (!entry.isIntersecting) {
+                return;
+            }
+
+            if (panel.classList.contains("share-panel") && !subjectShareChartInitialized) {
+                subjectShareChartInitialized = true;
+                buildSubjectShareChart();
+            }
+            if (panel.classList.contains("weekly-panel") && !weeklyChartInitialized) {
+                weeklyChartInitialized = true;
+                buildWeeklyChart();
+            }
+        });
+    },
+    {
+        root: null,
+        threshold: 0.35
+    }
+);
+
+function observeScrollPanels() {
+    const selectors = [".timer-card", ".stats-grid", ".panel"];
+    selectors.forEach((selector) => {
+        document.querySelectorAll(selector).forEach((element) => {
+            scrollVisibilityObserver.observe(element);
+        });
+    });
+}
 
 subjectForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -819,3 +867,4 @@ buildSubjectSelect();
 sessionEditorDate.value = new Date().toISOString().slice(0, 10);
 sessionEditorTime.value = new Date().toTimeString().slice(0, 5);
 loadSessions();
+observeScrollPanels();
